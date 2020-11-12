@@ -3,34 +3,46 @@
 
 const Renderer = function () {
 
-    const renderPost = function (posts) {
+    const createPost = (post) => {
+        const postText = post.text
+        const postId = post.id
+
+        return $(`
+                <div class="post" id = "${postId}">
+                    <br>
+                    <h5 class="post-text">${postText}</h5>
+                    <input type="text" placeholder="Got something to say?" class="cInput"></input>
+                    <button class="cButton">Comment</button>
+                    <button class="delete" >Delete Post</button>
+                </div>
+        `)
+    }
+
+    const createComments = (comments) => {
+        const $commentContainer = $('<div></div>')
+        for (let comment of comments) {
+            const commentDive = $(`
+            <div class="comments" data-id="${comment.id}">
+            <button class="delete-comment">X</button> ${comment.text}
+            </div>
+            `)
+            $commentContainer.append(commentDive)
+        }
+
+        return $commentContainer
+    }
+
+    const renderPosts = function (posts) {
 
         $("#posts").empty()
 
-        let postText = ""
-        let postId = ""
-
         for (let post of posts) {
-            postText = post.text
-            postId = post.id
+            const $postDiv = createPost(post)
+            const $commentContainer = createComments(post.comments)
+            $postDiv.find('.text').append($commentContainer)
 
-            postDiv = $(`
-        <div class="post" id = "${postId}">
-        <br> 
-        <h5 class="post-text">${postText}</h5>       
-        <input type="text" placeholder="Got something to say?" class="cInput"></input>
-        <button class="cButton">Comment</button>
-        <button class="delete" >Delete Post</button>
-        </div> `)
-            $("#posts").append(postDiv)
-
-            for (let comment of post.comments) {
-                const commentDive = $(`<div class="comments" data-id="${comment.id}">
-                                 <button class="delete-comment">X</button> ${comment.text}
-                                 </div> `)
-                $(`#${postId}`).find(".post-text").append(commentDive)
-            }
+            $("#posts").append($postDiv)
         }
     }
-    return { renderPost: renderPost }
+    return { renderPosts }
 }

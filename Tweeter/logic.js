@@ -33,46 +33,46 @@ const Tweeter = function () {
     const getPosts = () => _posts
 
     const addPost = function (text) {
-        const newPost = { text: text, id: `p${(postIdCounter + 1)}`, comments: [] }
-        postIdCounter++;
+        const newPost = { text, id: `p${postIdCounter++}`, comments: [] }
         _posts.push(newPost)
     }
+
     const removePost = function (postId) {
-        let postIndex = 0
         for (let i = 0; i < _posts.length; i++) {
             if (_posts[i].id == postId) {
-                postIndex = i
+                _posts.splice(i, 1)
+                break
             }
         }
-        _posts.splice(postIndex, 1)
     }
+
     const addComment = function (text, postId) {
-        commentIdCounter++
-        let newComment;
-        for (let i = 0; i < _posts.length; i++) {
-            if (postId == _posts[i].id) {
-                newComment = { id: `c${(commentIdCounter)}`, text: text }
-                _posts[i].comments.push(newComment)
+        for (let post of _posts) {
+            if (postId == post.id) {
+                const newComment = { id: `c${++commentIdCounter}`, text }
+                post.comments.push(newComment)
             }
         }
     }
+
     const removeComment = function (postId, commentId) {
-        for (let i = 0; i < _posts.length; i++) {
-            if (postId == _posts[i].id) {
-                for (let index in _posts[i].comments) {
-                    if (commentId == _posts[i].comments[index].id) {
-                        _posts[i].comments.splice(index, 1)
+        for (let post of _posts) {
+            if (postId == post.id) {
+                for (let i in post.comments) {
+                    if (commentId == post.comments[i].id) {
+                        post.comments.splice(i, 1)
                     }
                 }
             }
         }
     }
+
     return {
-        getPosts: getPosts,
-        addPost: addPost,
-        removePost: removePost,
-        addComment: addComment,
-        removeComment: removeComment,
+        getPosts,
+        addPost,
+        removePost,
+        addComment,
+        removeComment
     }
 
 }
